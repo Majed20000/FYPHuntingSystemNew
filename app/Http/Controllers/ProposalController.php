@@ -215,34 +215,61 @@ class ProposalController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Validate the incoming request data
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string|min:10',
-        ]);
+        try {
+            // Validate the incoming request data
+            $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string|min:10',
+            ]);
 
-        // Get the active timeframe
-        $currentTimeframe = \App\Models\Timeframe::where('is_active', true)
-            ->where('status', 'active')
-            ->first();
+            // Check for duplicate title
+            $existingProposal = ProjectProposal::where('title', $request->title)
+                ->where('proposal_type', 'lecturer')
+                ->first();
 
-        // If no active timeframe is found, redirect back with an error message
-        if (!$currentTimeframe) {
-            return redirect()->back()->with('error', 'No active timeframe found. Please contact the administrator.');
+            if ($existingProposal) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'A proposal with this title already exists. Please choose a different title.');
+            }
+
+            // Get the active timeframe
+            $currentTimeframe = \App\Models\Timeframe::where('is_active', true)
+                ->where('status', 'active')
+                ->first();
+
+            // If no active timeframe is found, redirect back with an error message
+            if (!$currentTimeframe) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'No active timeframe found. Please contact the administrator.');
+            }
+
+            // Create a new proposal
+            ProjectProposal::create([
+                'lecturer_id' => Auth::user()->lecturer->id,
+                'title' => $request->title,
+                'description' => $request->description,
+                'timeframe_id' => $currentTimeframe->id,
+                'proposal_type' => 'lecturer',
+                'status' => 'available'
+            ]);
+
+            // Redirect to manage proposals page with success message
+            return redirect()
+                ->route('lecturer.proposals.manage', ['user_id' => $user_id])
+                ->with('success', 'Proposal created successfully!');
+
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Error creating proposal: ' . $e->getMessage());
+            
+            // Redirect back with error message
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Failed to create proposal. Please try again.');
         }
-
-        // Create a new proposal
-        ProjectProposal::create([
-            'lecturer_id' => Auth::user()->lecturer->id,
-            'title' => $request->title,
-            'description' => $request->description,
-            'timeframe_id' => $currentTimeframe->id,
-            'proposal_type' => 'lecturer',
-            'status' => 'available'
-        ]);
-
-        // Redirect to the manage proposals page with a success message
-        return redirect()->back()->with('success', 'Proposal created successfully');
     }
 
     // Lecturer update proposal 
