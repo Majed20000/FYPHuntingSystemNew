@@ -105,7 +105,18 @@
                 <tr>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $user->name }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $user->email }}</td>
-                    <td class="px-6 py-4 whitespace-nowrap capitalize">{{ $user->role }}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="px-2 py-1 text-sm rounded-full capitalize
+                            @if($user->role === 'student')
+                                bg-blue-100 text-blue-800
+                            @elseif($user->role === 'lecturer')
+                                bg-green-100 text-green-800
+                            @elseif($user->role === 'coordinator')
+                                bg-purple-100 text-purple-800
+                            @endif">
+                            {{ $user->role }}
+                        </span>
+                    </td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ $user->matric_number }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <button onclick="deleteUser({{ $user->id }})"
