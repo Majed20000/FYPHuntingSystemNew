@@ -34,9 +34,8 @@
                     <select name="status" id="status"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                         <option value="">All Status</option>
-                        <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Available
-                        </option>
-                        <option value="taken" {{ request('status') == 'taken' ? 'selected' : '' }}>Taken</option>
+                        <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Available</option>
+                        <option value="unavailable" {{ request('status') == 'unavailable' ? 'selected' : '' }}>Unavailable</option>
                     </select>
                 </div>
                 <div class="flex items-end">
