@@ -110,7 +110,13 @@
                                             <div class="text-sm text-gray-500">{{ Str::limit($proposal->description, 100) }}</div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-center">
-                                            <div class="text-sm text-gray-900">{{ $lecturer->max_students }}</div>
+                                            @php
+                                                $approvedCount = $proposals->where('status', 'approved')->count();
+                                                $availableQuota = $lecturer->max_students - $approvedCount;
+                                            @endphp
+                                            <div class="text-sm text-gray-900">
+                                                {{ $availableQuota }} / {{ $lecturer->max_students }}
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-center">
                                             @if ($proposal->timeframe)
