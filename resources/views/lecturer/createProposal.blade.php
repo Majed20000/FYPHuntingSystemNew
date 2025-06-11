@@ -8,7 +8,36 @@
             Back to Proposals
         </a>
     </div>
-    <!-- Display errors -->
+
+    <!-- Success Message -->
+    @if(session('success'))
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded-md" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm">{{ session('success') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Error Message -->
+    @if(session('error'))
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4 rounded-md" role="alert">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Display validation errors -->
     @if($errors->any())
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             <ul>
@@ -18,6 +47,7 @@
             </ul>
         </div>
     @endif
+
     <!-- Create proposal form -->
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <form action="{{ route('lecturer.proposals.store', ['user_id' => Auth::id()]) }}" method="POST">

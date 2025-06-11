@@ -67,12 +67,22 @@ use App\Models\ProjectProposal;
                         </td>
                         <td class="py-3 px-6 text-center">
                             @if($application->status == 'pending')
-                                <button onclick="openReviewModal({{ $application->id }}, '{{ optional($application->student)->user->name }}', '{{ optional($application->student)->user->email }}', '{{ $application->title }}', '{{ $application->description }}', '{{ $application->created_at->format('d M Y, h:i A') }}')"
-                                        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                                    Review
-                                </button>
+                                <div class="flex justify-center space-x-2">
+                                    <button onclick="openReviewModal({{ $application->id }}, '{{ optional($application->student)->user->name }}', '{{ optional($application->student)->user->email }}', '{{ $application->title }}', '{{ $application->description }}', '{{ $application->created_at->format('d M Y, h:i A') }}')"
+                                            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                        Review
+                                    </button>
+                                    <a href="{{ route('lecturer.applications.show', ['user_id' => Auth::id(), 'application' => $application->id]) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                </div>
                             @else
-                                <span class="text-gray-500">{{ $application->rejection_reason ?? 'No remarks' }}</span>
+                                <div class="flex justify-center space-x-2">
+                                    <span class="text-gray-500">{{ $application->rejection_reason ?? 'No remarks' }}</span>
+                                    <a href="{{ route('lecturer.applications.show', ['user_id' => Auth::id(), 'application' => $application->id]) }}" class="btn btn-info btn-sm">
+                                        <i class="fas fa-info-circle"></i> Details
+                                    </a>
+                                </div>
                             @endif
                         </td>
                     </tr>
