@@ -595,4 +595,17 @@ class ProposalController extends Controller
                 ->with('error', 'Failed to submit review. Please try again. Error: ' . $e->getMessage());
         }
     }
+
+    public function showApplication($user_id, ProjectProposal $application)
+    {
+        // Verify user is a lecturer and owns the proposal
+        if (!Auth::user()->lecturer || Auth::id() != $user_id || $application->lecturer_id != Auth::user()->lecturer->id) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Load the necessary relationships
+        $application->load(['student.user', 'timeframe']);
+
+        return view('lecturer.showApplication', compact('application'));
+    }
 }

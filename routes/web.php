@@ -116,7 +116,7 @@ Route::middleware([
         Route::post('/appointments/{id}/reject', [AppointmentController::class, 'rejectAppointment'])
             ->name('appointments.reject');
 
-        // Application management routes - Qurr
+        // Application management routes
         Route::get('/applications', [ProposalController::class, 'manageApplications'])
             ->name('applications.manage');
 
@@ -125,6 +125,9 @@ Route::middleware([
 
         Route::put('/applications/{proposal}', [ProposalController::class, 'updateApplicationStatus'])
             ->name('applications.update');
+
+        Route::get('/applications/{application}', [ProposalController::class, 'showApplication'])
+            ->name('applications.show');
 
         // Proposal management routes
         Route::get('/proposals', [ProposalController::class, 'manageProposals'])
