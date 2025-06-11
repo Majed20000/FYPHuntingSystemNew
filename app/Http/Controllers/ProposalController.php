@@ -22,15 +22,14 @@ class ProposalController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        // Fetch the lecturer ID from the user_id
-        $lecturer = Lecturer::where('id', $user_id)->first();
-
         // Fetch the proposals from the database
-        $query = ProjectProposal::with(['lecturer', 'lecturer.user', 'timeframe'])
+        $query = ProjectProposal::with(['lecturer', 'lecturer.user', 'timeframe', 'student.user'])
             ->where('proposal_type', 'lecturer')
             ->where(function ($q) {
                 $q->where('status', 'available')
-                    ->orWhere('status', 'unavailable');
+                    ->orWhere('status', 'unavailable')
+                    ->orWhere('status', 'pending')
+                    ->orWhere('status', 'approved');
             });
 
         // Apply search filter
@@ -49,12 +48,34 @@ class ProposalController extends Controller
 
         // Apply status filter
         if ($request->has('status') && $request->status) {
-            $query->where('status', $request->status);
+            if ($request->status === 'unavailable') {
+                $query->where(function ($q) {
+                    $q->where('status', 'unavailable')
+                        ->orWhere('status', 'pending')
+                        ->orWhere('status', 'approved');
+                });
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
         // Fetch the proposals from the database
         $proposals = $query->latest()->paginate(10);
         $lecturers = Lecturer::with('user')->get();
+
+        // Debug information
+        \Log::info('Browse Proposals Query:', [
+            'status_filter' => $request->status,
+            'count' => $proposals->count(),
+            'proposals' => $proposals->map(function ($proposal) {
+                return [
+                    'id' => $proposal->id,
+                    'title' => $proposal->title,
+                    'status' => $proposal->status,
+                    'student_name' => optional($proposal->student)->user->name ?? 'No Student',
+                ];
+            })
+        ]);
 
         // Return the view with the proposals and lecturers
         return view('student.browseProposal', compact('proposals', 'lecturers'));
