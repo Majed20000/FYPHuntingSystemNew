@@ -9,7 +9,7 @@
             <h1 class="text-2xl font-bold">Add New Timeframe</h1>
             <p class="text-gray-600 mt-1">Set up a new academic timeframe period</p>
         </div>
-        <a href="{{ route('coordinator.timeframes.index') }}" 
+        <a href="{{ route('coordinator.timeframes.index') }}"
            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200">
             <i class="fas fa-arrow-left mr-2"></i>
             Back to Timeframes
@@ -35,7 +35,7 @@
             <!-- Academic Year and Semester -->
             <div>
                 <label for="academic_year" class="block text-sm font-medium text-gray-700">Academic Year</label>
-                <input type="text" name="academic_year" id="academic_year" 
+                <input type="text" name="academic_year" id="academic_year"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        placeholder="e.g., 2025/2026" required pattern="\d{4}/\d{4}"
                        title="Please enter in format: YYYY/YYYY (e.g., 2025/2026)"
@@ -48,7 +48,7 @@
 
             <div>
                 <label for="semester" class="block text-sm font-medium text-gray-700">Semester</label>
-                <select name="semester" id="semester" 
+                <select name="semester" id="semester"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="1" {{ old('semester') == '1' ? 'selected' : '' }}>Semester 1</option>
                     <option value="2" {{ old('semester') == '2' ? 'selected' : '' }}>Semester 2</option>
@@ -62,7 +62,7 @@
             <!-- Start and End Dates -->
             <div>
                 <label for="start_date" class="block text-sm font-medium text-gray-700">Start Date</label>
-                <input type="date" name="start_date" id="start_date" 
+                <input type="date" name="start_date" id="start_date"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        required value="{{ old('start_date') }}">
                 @error('start_date')
@@ -72,7 +72,7 @@
 
             <div>
                 <label for="end_date" class="block text-sm font-medium text-gray-700">End Date</label>
-                <input type="date" name="end_date" id="end_date" 
+                <input type="date" name="end_date" id="end_date"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        required value="{{ old('end_date') }}">
                 @error('end_date')
@@ -85,7 +85,7 @@
                 <label for="proposal_submission_deadline" class="block text-sm font-medium text-gray-700">
                     Proposal Submission Deadline
                 </label>
-                <input type="datetime-local" name="proposal_submission_deadline" id="proposal_submission_deadline" 
+                <input type="datetime-local" name="proposal_submission_deadline" id="proposal_submission_deadline"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        required value="{{ old('proposal_submission_deadline') }}">
                 @error('proposal_submission_deadline')
@@ -97,7 +97,7 @@
                 <label for="supervisor_confirmation_deadline" class="block text-sm font-medium text-gray-700">
                     Supervisor Confirmation Deadline
                 </label>
-                <input type="datetime-local" name="supervisor_confirmation_deadline" id="supervisor_confirmation_deadline" 
+                <input type="datetime-local" name="supervisor_confirmation_deadline" id="supervisor_confirmation_deadline"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        required value="{{ old('supervisor_confirmation_deadline') }}">
                 @error('supervisor_confirmation_deadline')
@@ -110,7 +110,7 @@
                 <label for="max_applications_per_student" class="block text-sm font-medium text-gray-700">
                     Max Applications per Student
                 </label>
-                <input type="number" name="max_applications_per_student" id="max_applications_per_student" 
+                <input type="number" name="max_applications_per_student" id="max_applications_per_student"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        min="1" max="10" value="{{ old('max_applications_per_student', 1) }}" required>
                 @error('max_applications_per_student')
@@ -122,7 +122,7 @@
                 <label for="max_appointments_per_student" class="block text-sm font-medium text-gray-700">
                     Max Appointments per Student
                 </label>
-                <input type="number" name="max_appointments_per_student" id="max_appointments_per_student" 
+                <input type="number" name="max_appointments_per_student" id="max_appointments_per_student"
                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                        min="1" max="10" value="{{ old('max_appointments_per_student', 3) }}" required>
                 @error('max_appointments_per_student')
@@ -135,7 +135,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select name="status" id="status" 
+                <select name="status" id="status"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                     <option value="draft" {{ old('status') == 'draft' ? 'selected' : '' }}>Draft</option>
                     <option value="active" {{ old('status') == 'active' ? 'selected' : '' }}>Active</option>
@@ -150,8 +150,11 @@
                 <input type="checkbox" name="is_active" id="is_active" value="1"
                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                        {{ old('is_active') ? 'checked' : '' }}>
-                <label for="is_active" class="ml-2 block text-sm text-gray-700">
+                <label for="is_active" class="ml-2 block text-sm text-gray-700 flex items-center">
                     Set as Active Period
+                    <i class="fas fa-info-circle ml-1 text-gray-400 cursor-pointer"
+                       data-bs-toggle="tooltip"
+                       title="Select this to make the current timeframe the active one for student assignments."></i>
                 </label>
                 @error('is_active')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -179,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Validate end date is after start date
     const startDate = document.getElementById('start_date');
     const endDate = document.getElementById('end_date');
-    
+
     function validateDates() {
         if (startDate.value && endDate.value && endDate.value < startDate.value) {
             endDate.setCustomValidity('End date must be after start date');
@@ -220,6 +223,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     proposalDeadline.addEventListener('change', validateDeadlines);
     supervisorDeadline.addEventListener('change', validateDeadlines);
+
+    // Initialize Bootstrap tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
 });
 </script>
 @endpush
