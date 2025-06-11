@@ -33,4 +33,4 @@ class Lecturer extends Model
     {
         return $this->hasMany(Appointment::class, 'lecturer_id', 'user_id');
     }
-}
+} 

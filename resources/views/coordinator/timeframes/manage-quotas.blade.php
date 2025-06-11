@@ -9,11 +9,7 @@
             <h1 class="text-2xl font-bold">Manage Lecturer Quotas</h1>
             <p class="text-gray-600 mt-1">Set supervision quotas for {{ $timeframe->academic_year }} Semester {{ $timeframe->semester }}</p>
         </div>
-        <div class="flex items-center space-x-4">
-            <label class="block text-sm font-medium text-gray-700">Set Last Updated:</label>
-            <input type="datetime-local" x-model="manualUpdatedAt" class="block rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-        </div>
-        <a href="{{ route('coordinator.timeframes.index') }}"
+        <a href="{{ route('coordinator.timeframes.index') }}" 
            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
             <i class="fas fa-arrow-left mr-2"></i>
             Back to Timeframes
@@ -27,10 +23,10 @@
             <div class="flex items-center space-x-4">
                 <div class="w-48">
                     <label class="block text-sm font-medium text-gray-700">Default Value</label>
-                    <input type="number"
-                           x-model="defaultQuota"
+                    <input type="number" 
+                           x-model="defaultQuota" 
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                           min="1"
+                           min="1" 
                            max="20">
                 </div>
                 <button @click="applyDefaultQuota()"
@@ -54,25 +50,20 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-sm text-gray-500">Max Students:</span>
-                                <input type="number"
+                                <input type="number" 
                                        x-model="lecturer.max_students"
                                        class="block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                       min="1"
+                                       min="1" 
                                        max="20">
                             </div>
                             <div class="flex items-center space-x-2">
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox"
+                                    <input type="checkbox" 
                                            x-model="lecturer.accepting_students"
                                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                     <span class="ml-2 text-sm text-gray-600">Accepting Students</span>
                                 </label>
                             </div>
-                            <div class="flex items-center space-x-2 mt-2">
-                                <span class="text-sm text-gray-500">Last Updated:</span>
-                                <span class="text-xs text-gray-700" x-text="lecturer.updated_at || '-' "></span>
-                            </div>
-
                         </div>
                     </div>
                 </template>
@@ -97,7 +88,6 @@ function quotaManager() {
         defaultQuota: 5,
         lecturers: [],
         timeframeId: '{{ $timeframe->id }}',
-        manualUpdatedAt: '',
 
         async initialize() {
             try {
@@ -143,8 +133,7 @@ function quotaManager() {
                         specific_quotas: this.lecturers.map(l => ({
                             lecturer_id: l.id,
                             max_students: l.max_students,
-                            accepting_students: l.accepting_students,
-                            updated_at: this.manualUpdatedAt ? new Date(this.manualUpdatedAt).toISOString() : undefined
+                            accepting_students: l.accepting_students
                         }))
                     })
                 });
@@ -169,4 +158,4 @@ function quotaManager() {
     }
 }
 </script>
-@endpush
+@endpush 

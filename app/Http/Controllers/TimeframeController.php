@@ -41,7 +41,7 @@ class TimeframeController extends Controller
 
             // Get the coordinator record for the authenticated user
             $coordinator = Coordinator::where('user_id', Auth::id())->first();
-
+            
             if (!$coordinator) {
                 throw new \Exception('Coordinator record not found');
             }
@@ -49,7 +49,7 @@ class TimeframeController extends Controller
             // If setting this timeframe as active, deactivate all other timeframes
             if ($request->has('is_active') && $request->is_active) {
                 Timeframe::where('is_active', true)->update(['is_active' => false]);
-
+                
                 // Store activation timestamp in cache to trigger notifications
                 Cache::put('timeframe_activated_' . $request->academic_year . '_' . $request->semester, now()->timestamp);
 
@@ -120,7 +120,7 @@ class TimeframeController extends Controller
             // If setting this timeframe as active, deactivate all other timeframes
             if ($request->has('is_active') && $request->is_active && !$timeframe->is_active) {
                 Timeframe::where('is_active', true)->update(['is_active' => false]);
-
+                
                 // Store activation timestamp in cache to trigger notifications
                 Cache::put('timeframe_activated_' . $timeframe->academic_year . '_' . $timeframe->semester, now()->timestamp);
             }
@@ -143,7 +143,7 @@ class TimeframeController extends Controller
     {
         try {
             $timeframe = Timeframe::findOrFail($id);
-
+            
             if ($timeframe->is_active) {
                 return back()->with('error', 'Cannot delete active timeframe');
             }
@@ -225,34 +225,28 @@ class TimeframeController extends Controller
     {
         try {
             $timeframe = Timeframe::findOrFail($timeframeId);
-
+            
             // Validate request
             $request->validate([
                 'default_quota' => 'required|integer|min:1|max:20',
                 'specific_quotas' => 'required|array',
                 'specific_quotas.*.lecturer_id' => 'required|exists:lecturer,id',
                 'specific_quotas.*.max_students' => 'required|integer|min:1|max:20',
-                'specific_quotas.*.accepting_students' => 'required|boolean',
-                'specific_quotas.*.notes' => 'nullable|string',
+                'specific_quotas.*.accepting_students' => 'required|boolean'
             ]);
 
             // Begin transaction
             \DB::beginTransaction();
 
             try {
-                // Update each lecturer's quota, accepting status, and notes
+                // Update each lecturer's quota and accepting status
                 foreach ($request->specific_quotas as $quotaData) {
-                    $updateData = [
-                        'max_students' => $quotaData['max_students'],
-                        'accepting_students' => $quotaData['accepting_students'],
-                    ];
-                    if (!empty($quotaData['updated_at'])) {
-                        $updateData['updated_at'] = $quotaData['updated_at'];
-                    } else {
-                        $updateData['updated_at'] = now();
-                    }
                     Lecturer::where('id', $quotaData['lecturer_id'])
-                        ->update($updateData);
+                        ->update([
+                            'max_students' => $quotaData['max_students'],
+                            'accepting_students' => $quotaData['accepting_students'],
+                            'updated_at' => now()
+                        ]);
                 }
 
                 \DB::commit();
@@ -281,7 +275,7 @@ class TimeframeController extends Controller
         try {
             $timeframe = Timeframe::findOrFail($timeframeId);
             $lecturers = Lecturer::with('user')
-                ->select('id', 'user_id', 'current_students', 'max_students', 'accepting_students', 'notes', 'updated_at')
+                ->select('id', 'user_id', 'current_students', 'max_students', 'accepting_students')
                 ->get()
                 ->map(function ($lecturer) {
                     return [
@@ -289,9 +283,7 @@ class TimeframeController extends Controller
                         'name' => $lecturer->user->name,
                         'current_students' => $lecturer->current_students,
                         'max_students' => $lecturer->max_students,
-                        'accepting_students' => $lecturer->accepting_students,
-                        'notes' => $lecturer->notes,
-                        'updated_at' => $lecturer->updated_at ? $lecturer->updated_at->format('d/m/Y H:i') : null,
+                        'accepting_students' => $lecturer->accepting_students
                     ];
                 });
 
@@ -321,4 +313,4 @@ class TimeframeController extends Controller
         $timeframe = Timeframe::findOrFail($timeframe);
         return view('coordinator.timeframes.manage-quotas', compact('timeframe'));
     }
-}
+} 
