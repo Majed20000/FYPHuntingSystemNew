@@ -186,6 +186,9 @@ Route::middleware([
 
         Route::get('/timeframes/{timeframe}/quotas', [TimeframeController::class, 'getLecturerQuotas'])
             ->name('coordinator.timeframes.quotas.index');
+
+        // User Export Routes
+        Route::get('/users/export/excel', [UserRegisterController::class, 'exportExcelWithPhpSpreadsheet'])->name('users.export.excel');
     });
 
     // Change Password Routes

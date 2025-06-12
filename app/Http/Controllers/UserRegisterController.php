@@ -13,6 +13,9 @@ use Illuminate\Support\Str;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
 
 class UserRegisterController extends Controller
 {
@@ -195,5 +198,34 @@ class UserRegisterController extends Controller
                 'message' => 'Error deleting user: ' . $e->getMessage()
             ], 500);
         }
+    }
+    public function exportExcelWithPhpSpreadsheet()
+    {
+        $users = \App\Models\User::all();
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Set header
+        $sheet->fromArray(['Name', 'Email', 'Role', 'ID Number', 'Created At'], null, 'A1');
+
+        // Fill data
+        $row = 2;
+        foreach ($users as $user) {
+            $sheet->fromArray([
+                $user->name,
+                $user->email,
+                ucfirst($user->role),
+                $user->matric_number,
+                $user->created_at->format('Y-m-d H:i:s')
+            ], null, 'A' . $row++);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $fileName = 'users-list.xlsx';
+        $temp_file = tempnam(sys_get_temp_dir(), $fileName);
+        $writer->save($temp_file);
+
+        return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
     }
 }
