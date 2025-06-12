@@ -109,6 +109,17 @@
 
         <!-- Users Table -->
         <div class="bg-white rounded-lg shadow overflow-hidden">
+            <!-- User Count and Range Information -->
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                <div class="flex justify-between items-center">
+                    <div class="text-sm text-gray-600">
+                        Showing {{ $users->firstItem() ?? 0 }} to {{ $users->lastItem() ?? 0 }} of {{ $users->total() }} users
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        Total Users: {{ $users->total() }}
+                    </div>
+                </div>
+            </div>
             <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
