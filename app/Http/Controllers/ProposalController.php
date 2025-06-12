@@ -59,8 +59,19 @@ class ProposalController extends Controller
             }
         }
 
-        // Fetch the proposals from the database
-        $proposals = $query->latest()->paginate(10);
+        // Custom order for status: available > pending > approved > unavailable > rejected
+        $statusOrder = [
+            'available' => 1,
+            'pending' => 2,
+            'approved' => 3,
+            'unavailable' => 4,
+            'rejected' => 5,
+        ];
+
+        $proposals = $query
+            ->orderByRaw("FIELD(status, 'available', 'pending', 'approved', 'unavailable', 'rejected')")
+            ->orderByDesc('created_at')
+            ->paginate(10);
         $lecturers = Lecturer::with('user')->get();
 
         // Debug information
@@ -316,7 +327,8 @@ class ProposalController extends Controller
             'timeframe_id' => $proposal->timeframe_id // Preserve existing timeframe
         ]);
 
-        return redirect()->back()->with('success', 'Proposal updated successfully');
+        return redirect()->route('lecturer.proposals.manage', ['user_id' => $user_id])
+            ->with('success', 'Proposal updated successfully!');
     }
 
     // Lecturer delete proposal

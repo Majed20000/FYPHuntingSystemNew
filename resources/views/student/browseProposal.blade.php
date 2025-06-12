@@ -58,8 +58,28 @@
                         </div>
                         <span
                             class="px-2 py-1 text-xs font-semibold rounded-full
-                        {{ $proposal->status === 'available' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                            {{ ucfirst($proposal->status) }}
+                        @if($proposal->status === 'available')
+                            bg-green-100 text-green-800
+                        @elseif($proposal->status === 'unavailable')
+                            bg-red-100 text-red-800
+                        @elseif($proposal->status === 'rejected')
+                            bg-red-100 text-red-800
+                        @elseif($proposal->status === 'pending')
+                            bg-yellow-100 text-yellow-800
+                        @elseif($proposal->status === 'approved')
+                            bg-red-100 text-red-800
+                        @else
+                            bg-gray-100 text-gray-800
+                        @endif">
+                            @if($proposal->status === 'rejected')
+                                Rejected
+                            @elseif($proposal->status === 'unavailable')
+                                Unavailable
+                            @elseif($proposal->status === 'approved')
+                                Taken
+                            @else
+                                {{ ucfirst($proposal->status) }}
+                            @endif
                         </span>
                     </div>
                     <p class="mt-2 text-gray-600">{{ $proposal->description }}</p>
