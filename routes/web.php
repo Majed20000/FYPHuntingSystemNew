@@ -189,6 +189,7 @@ Route::middleware([
 
         // User Export Routes
         Route::get('/users/export/excel', [UserRegisterController::class, 'exportExcelWithPhpSpreadsheet'])->name('users.export.excel');
+        Route::get('/users/export/pdf', [UserRegisterController::class, 'exportPdf'])->name('users.export.pdf');
     });
 
     // Change Password Routes

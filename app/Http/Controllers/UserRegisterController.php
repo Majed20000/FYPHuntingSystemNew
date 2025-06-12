@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class UserRegisterController extends Controller
@@ -227,5 +228,11 @@ class UserRegisterController extends Controller
         $writer->save($temp_file);
 
         return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+    }
+    public function exportPdf()
+    {
+        $users = User::all();
+        $pdf = PDF::loadView('coordinator.exports.users-pdf', compact('users'));
+        return $pdf->download('users-list.pdf');
     }
 }
