@@ -317,6 +317,10 @@ class TimeframeController extends Controller
     public function showQuotaSummary($timeframe)
     {
         $timeframe = Timeframe::findOrFail($timeframe);
+
+        // Get the most recent updated_at timestamp from lecturers and cast to Carbon
+        $lastUpdated = Lecturer::max('updated_at') ? \Carbon\Carbon::parse(Lecturer::max('updated_at')) : null;
+
         $lecturers = Lecturer::with(['user', 'students' => function($query) {
             $query->select('student.id', 'student.name')
                   ->withTimestamps();
@@ -334,6 +338,6 @@ class TimeframeController extends Controller
             ];
         });
 
-        return view('coordinator.timeframes.quotas-summary', compact('timeframe', 'lecturers'));
+        return view('coordinator.timeframes.quotas-summary', compact('timeframe', 'lecturers', 'lastUpdated'));
     }
 }

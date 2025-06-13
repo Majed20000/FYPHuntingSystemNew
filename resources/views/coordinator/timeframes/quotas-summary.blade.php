@@ -8,6 +8,7 @@
         <div>
             <h1 class="text-2xl font-bold">Quota Summary</h1>
             <p class="text-gray-600 mt-1">{{ $timeframe->academic_year }} Semester {{ $timeframe->semester }}</p>
+            <p class="text-sm text-gray-500 mt-1">Last Updated: {{ $lastUpdated ? $lastUpdated->format('d/m/Y, h:i A') : 'Never' }}</p>
         </div>
         <a href="{{ route('coordinator.timeframes.quotas.manage', ['timeframe' => $timeframe->id]) }}"
            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
