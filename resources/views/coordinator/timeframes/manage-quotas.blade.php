@@ -64,30 +64,19 @@
                                     <span class="ml-2 text-sm text-gray-600">Accepting Students</span>
                                 </label>
                             </div>
-
-                            <!-- Assigned Students Section -->
-                            <div class="mt-4">
-                                <h3 class="text-sm font-medium text-gray-700 mb-2">Assigned Students</h3>
-                                <div class="space-y-1">
-                                    <template x-if="lecturer.assigned_students && lecturer.assigned_students.length > 0">
-                                        <div>
-                                            <template x-for="student in lecturer.assigned_students" :key="student.id">
-                                                <div class="text-sm text-gray-600 flex items-center">
-                                                    <i class="fas fa-user-graduate mr-2 text-gray-400"></i>
-                                                    <span x-text="student.name"></span>
-                                                </div>
-                                            </template>
-                                        </div>
-                                    </template>
-                                    <template x-if="!lecturer.assigned_students || lecturer.assigned_students.length === 0">
-                                        <p class="text-sm text-gray-500 italic">No students assigned</p>
-                                    </template>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </template>
             </div>
+        </div>
+
+        <!-- View Summary Button -->
+        <div class="mt-6">
+            <a href="{{ route('coordinator.timeframes.quotas.summary', ['timeframe' => $timeframe->id]) }}"
+               class="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                <i class="fas fa-list-ul mr-2"></i>
+                View Quota Summary
+            </a>
         </div>
 
         <!-- Save Button -->

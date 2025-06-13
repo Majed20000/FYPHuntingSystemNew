@@ -274,14 +274,7 @@ class TimeframeController extends Controller
     {
         try {
             $timeframe = Timeframe::findOrFail($timeframeId);
-            $lecturers = Lecturer::with(['user', 'students' => function($query) use ($timeframeId) {
-                $query->select('students.id', 'students.user_id', 'students.lecturer_id')
-                    ->whereHas('proposals', function($q) use ($timeframeId) {
-                        $q->where('timeframe_id', $timeframeId)
-                          ->where('status', 'approved');
-                    })
-                    ->with('user:id,name');
-            }])
+            $lecturers = Lecturer::with('user')
                 ->select('id', 'user_id', 'current_students', 'max_students', 'accepting_students')
                 ->get()
                 ->map(function ($lecturer) {
@@ -290,13 +283,7 @@ class TimeframeController extends Controller
                         'name' => $lecturer->user->name,
                         'current_students' => $lecturer->current_students,
                         'max_students' => $lecturer->max_students,
-                        'accepting_students' => $lecturer->accepting_students,
-                        'assigned_students' => $lecturer->students->map(function($student) {
-                            return [
-                                'id' => $student->id,
-                                'name' => $student->user->name
-                            ];
-                        })
+                        'accepting_students' => $lecturer->accepting_students
                     ];
                 });
 
@@ -325,5 +312,28 @@ class TimeframeController extends Controller
     {
         $timeframe = Timeframe::findOrFail($timeframe);
         return view('coordinator.timeframes.manage-quotas', compact('timeframe'));
+    }
+
+    public function showQuotaSummary($timeframe)
+    {
+        $timeframe = Timeframe::findOrFail($timeframe);
+        $lecturers = Lecturer::with(['user', 'students' => function($query) {
+            $query->select('student.id', 'student.name')
+                  ->withTimestamps();
+        }])
+        ->select('id', 'user_id', 'current_students', 'max_students')
+        ->get()
+        ->map(function ($lecturer) {
+            return [
+                'id' => $lecturer->id,
+                'name' => $lecturer->user->name,
+                'students' => $lecturer->students->pluck('name'),
+                'current_students' => $lecturer->current_students,
+                'max_students' => $lecturer->max_students,
+                'remaining_slots' => $lecturer->max_students - $lecturer->current_students
+            ];
+        });
+
+        return view('coordinator.timeframes.quotas-summary', compact('timeframe', 'lecturers'));
     }
 }

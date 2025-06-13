@@ -173,6 +173,9 @@ Route::middleware([
             Route::get('{timeframe}/quotas/manage', [TimeframeController::class, 'showQuotaManager'])
                 ->name('quotas.manage');
 
+            Route::get('{timeframe}/quotas/summary', [TimeframeController::class, 'showQuotaSummary'])
+                ->name('quotas.summary');
+
             Route::get('/', [TimeframeController::class, 'index'])->name('index');
             Route::get('/create', [TimeframeController::class, 'create'])->name('create');
             Route::post('/', [TimeframeController::class, 'store'])->name('store');
