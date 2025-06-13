@@ -106,13 +106,11 @@
                 <thead class="bg-gray-50">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Number
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions
-                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Number</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supervisor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -134,6 +132,18 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">{{ $user->matric_number }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                            @if($user->role === 'student')
+                                    @php
+                                        $proposal = \App\Models\ProjectProposal::where('student_id', $user->id)
+                                            ->where('status', \App\Models\ProjectProposal::STATUS_ACCEPTED)
+                                            ->first();
+                                    @endphp
+                                    {{ $proposal ? $proposal->lecturer->name : 'Not Assigned' }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <button onclick="deleteUser({{ $user->id }})" class="text-red-600 hover:text-red-900">
                                     Delete
