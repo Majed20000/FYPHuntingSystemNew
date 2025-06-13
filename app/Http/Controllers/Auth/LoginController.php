@@ -105,6 +105,7 @@ class LoginController extends Controller
             return back()->withErrors(['current_password' => 'The current password is incorrect.']);
         }
 
+
         // Update password
         $user->password = Hash::make($request->new_password);
         $user->save();

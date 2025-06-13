@@ -161,6 +161,9 @@ Route::middleware([
         Route::post('/register', [UserRegisterController::class, 'store'])
             ->name('register.store');
 
+        Route::post('/register/single', [UserRegisterController::class, 'storeSingle'])
+            ->name('register.single');
+
         Route::delete('/register/{id}', [UserRegisterController::class, 'destroy'])
             ->name('register.destroy');
 
@@ -189,6 +192,10 @@ Route::middleware([
 
         Route::get('/timeframes/{timeframe}/quotas', [TimeframeController::class, 'getLecturerQuotas'])
             ->name('coordinator.timeframes.quotas.index');
+
+        // User Export Routes
+        Route::get('/users/export/excel', [UserRegisterController::class, 'exportExcelWithPhpSpreadsheet'])->name('users.export.excel');
+        Route::get('/users/export/pdf', [UserRegisterController::class, 'exportPdf'])->name('users.export.pdf');
     });
 
     // Change Password Routes
