@@ -5,7 +5,7 @@
 @section('content') <!-- Start of the content of the page -->
 <div class="container mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-gray-900">Manage User</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Manage Users</h1>
         <button onclick="openRegisterModal()" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                 Register New User
         </button>
