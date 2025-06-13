@@ -9,7 +9,7 @@
             <h1 class="text-2xl font-bold">Manage Lecturer Quotas</h1>
             <p class="text-gray-600 mt-1">Set supervision quotas for {{ $timeframe->academic_year }} Semester {{ $timeframe->semester }}</p>
         </div>
-        <a href="{{ route('coordinator.timeframes.index') }}" 
+        <a href="{{ route('coordinator.timeframes.index') }}"
            class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
             <i class="fas fa-arrow-left mr-2"></i>
             Back to Timeframes
@@ -23,10 +23,10 @@
             <div class="flex items-center space-x-4">
                 <div class="w-48">
                     <label class="block text-sm font-medium text-gray-700">Default Value</label>
-                    <input type="number" 
-                           x-model="defaultQuota" 
+                    <input type="number"
+                           x-model="defaultQuota"
                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                           min="1" 
+                           min="1"
                            max="20">
                 </div>
                 <button @click="applyDefaultQuota()"
@@ -50,19 +50,39 @@
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="text-sm text-gray-500">Max Students:</span>
-                                <input type="number" 
+                                <input type="number"
                                        x-model="lecturer.max_students"
                                        class="block w-20 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                       min="1" 
+                                       min="1"
                                        max="20">
                             </div>
                             <div class="flex items-center space-x-2">
                                 <label class="inline-flex items-center">
-                                    <input type="checkbox" 
+                                    <input type="checkbox"
                                            x-model="lecturer.accepting_students"
                                            class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
                                     <span class="ml-2 text-sm text-gray-600">Accepting Students</span>
                                 </label>
+                            </div>
+
+                            <!-- Assigned Students Section -->
+                            <div class="mt-4">
+                                <h3 class="text-sm font-medium text-gray-700 mb-2">Assigned Students</h3>
+                                <div class="space-y-1">
+                                    <template x-if="lecturer.assigned_students && lecturer.assigned_students.length > 0">
+                                        <div>
+                                            <template x-for="student in lecturer.assigned_students" :key="student.id">
+                                                <div class="text-sm text-gray-600 flex items-center">
+                                                    <i class="fas fa-user-graduate mr-2 text-gray-400"></i>
+                                                    <span x-text="student.name"></span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </template>
+                                    <template x-if="!lecturer.assigned_students || lecturer.assigned_students.length === 0">
+                                        <p class="text-sm text-gray-500 italic">No students assigned</p>
+                                    </template>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -158,4 +178,4 @@ function quotaManager() {
     }
 }
 </script>
-@endpush 
+@endpush
