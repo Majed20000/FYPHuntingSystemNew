@@ -158,6 +158,9 @@ Route::middleware([
         Route::post('/register', [UserRegisterController::class, 'store'])
             ->name('register.store');
 
+        Route::post('/register/single', [UserRegisterController::class, 'storeSingle'])
+            ->name('register.single');
+
         Route::delete('/register/{id}', [UserRegisterController::class, 'destroy'])
             ->name('register.destroy');
 

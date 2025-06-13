@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Validator;
 
 
 class UserRegisterController extends Controller
@@ -123,6 +124,105 @@ class UserRegisterController extends Controller
         }
     }
 
+    /**
+     * Register a single user
+     */
+    public function storeSingle(Request $request)
+    {
+        try {
+            \Log::info('Received registration request:', $request->all());
+
+            $validator = Validator::make($request->all(), [
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:user,email',
+                'matric_number' => 'required|string|unique:user,matric_number',
+                'role' => 'required|in:student,lecturer,coordinator'
+            ]);
+
+            if ($validator->fails()) {
+                \Log::warning('Validation failed:', $validator->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            DB::beginTransaction();
+
+            try {
+                // Generate temporary password
+                $tempPassword = Str::random(10);
+
+                // Create user
+                $user = User::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'matric_number' => $request->matric_number,
+                    'password' => Hash::make($tempPassword),
+                    'role' => $request->role,
+                    'first_login' => true
+                ]);
+
+                \Log::info('User created:', ['user_id' => $user->id]);
+
+                // Create role-specific record
+                if ($user->role === 'student') {
+                    Student::create([
+                        'user_id' => $user->id,
+                        'name' => $user->name,
+                        'matric_id' => $user->matric_number,
+                        'email' => $user->email
+                    ]);
+                    \Log::info('Student record created for user:', ['user_id' => $user->id]);
+                } elseif ($user->role === 'lecturer') {
+                    Lecturer::create([
+                        'user_id' => $user->id,
+                        'name' => $user->name,
+                        'staff_id' => $user->matric_number,
+                        'email' => $user->email,
+                        'phone' => "",
+                        'research_group' => "",
+                        'max_students' => 5,
+                        'current_students' => 0,
+                        'accepting_students' => true
+                    ]);
+                    \Log::info('Lecturer record created for user:', ['user_id' => $user->id]);
+                }
+
+                // Send email with temporary password
+                Mail::to($user->email)->send(new \App\Mail\UserCredentials([
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'password' => $tempPassword,
+                    'role' => $user->role
+                ]));
+                \Log::info('Credentials email sent to:', ['email' => $user->email]);
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'User registered successfully. Temporary credentials have been sent to their email.'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::error('Error in transaction:', [
+                    'message' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error registering user:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Error registering user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 
     //To retrieve the users from the database and display them in the userRegister view
     public function index(Request $request)
