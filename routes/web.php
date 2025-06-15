@@ -75,9 +75,9 @@ Route::middleware([
         Route::get('/appointments', [AppointmentController::class, 'viewStudentAppointments'])
             ->name('appointments.view');
 
-        // Browse Proposals
-        Route::get('/browse-proposals', [ProposalController::class, 'browse'])
-            ->name('browse-proposals');
+        // Browse Lecturers
+        Route::get('/browse-lecturers', [ProposalController::class, 'browse'])
+            ->name('browse-lecturers');
 
         // Update Proposal
         Route::post('/update-proposal', [ProposalController::class, 'updateApplication'])
@@ -86,6 +86,11 @@ Route::middleware([
         // My Applications
         Route::get('/my-applications', [ProposalController::class, 'myApplications'])
             ->name('my-applications');
+
+        // Student List Lecturer Proposals
+        Route::get('/list-lecturer-proposals', [ProposalController::class, 'listLecturerProposals'])->name('list-lecturer-proposals');
+        Route::post('/store-proposal', [ProposalController::class, 'storeStudentProposal'])->name('store-proposal');
+        Route::post('/apply-proposal', [ProposalController::class, 'applyToProposal'])->name('apply-proposal');
     });
 
     // Lecturer Routes Group
@@ -130,8 +135,21 @@ Route::middleware([
             ->name('applications.show');
 
         // Proposal management routes
-        Route::get('/proposals', [ProposalController::class, 'manageProposals'])
-            ->name('proposals.manage');
+        Route::get('/proposals/manage', [ProposalController::class, 'manageProposals'])->name('proposals.manage');
+        Route::get('/proposals/create', [ProposalController::class, 'create'])->name('proposals.create');
+        Route::post('/proposals/store', [ProposalController::class, 'store'])->name('store-proposal');
+        Route::get('/proposals/{proposal}/edit', [ProposalController::class, 'edit'])->name('proposals.edit');
+        Route::put('/proposals/{proposal}', [ProposalController::class, 'update'])->name('proposals.update');
+        Route::delete('/proposals/{proposal}', [ProposalController::class, 'destroy'])->name('proposals.destroy');
+        Route::get('/proposals/{proposal}', [ProposalController::class, 'show'])->name('proposals.show');
+        Route::get('/my-proposals', [ProposalController::class, 'myProposals'])->name('my-proposals');
+
+        // Applications routes
+        Route::get('/manage-applications', [ProposalController::class, 'manageApplications'])->name('manage-applications');
+
+        // Review proposals
+        Route::get('/review-proposals', [ProposalController::class, 'reviewProposals'])->name('review-proposals');
+        Route::post('/review-proposal', [ProposalController::class, 'reviewProposal'])->name('review-proposal');
     });
 
     // Proposal Management Routes
@@ -195,6 +213,13 @@ Route::middleware([
     Route::middleware(['auth'])->group(function () {
         Route::get('/change-password', [App\Http\Controllers\Auth\LoginController::class, 'showChangePasswordForm'])->name('password.change.form');
         Route::post('/change-password', [App\Http\Controllers\Auth\LoginController::class, 'changePassword'])->name('password.change');
+    });
+
+    // Lecturer routes
+    Route::middleware(['auth', 'lecturer'])->group(function () {
+        // Review proposals
+        Route::post('/lecturer/{user_id}/review-proposal', [ProposalController::class, 'reviewProposal'])
+            ->name('lecturer.review-proposal');
     });
 });
 
